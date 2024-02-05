@@ -2285,13 +2285,16 @@ class Libilsws
             ];
         $language = !empty($patron['language']) ? $languages[$patron['language']] : 'en';
 
-        if ( is_readable($this->config['symphony']['template_path'] . '/' . $template . '.' . $language) ) {
-            $template = $template . '.' . $language;
-        } else {
-            if ( is_readable($this->config['symphony']['template_path'] . '/' . $template . '.' . 'en') ) {
-                $template = $template . '.' . 'en';
+        // Skip template readability if none is provided.
+        if ($template != '') {
+            if ( is_readable($this->config['symphony']['template_path'] . '/' . $template . '.' . $language) ) {
+                $template = $template . '.' . $language;
             } else {
-                throw new Exception("Missing or unreadable template file: $template");
+                if ( is_readable($this->config['symphony']['template_path'] . '/' . $template . '.' . 'en') ) {
+                    $template = $template . '.' . 'en';
+                } else {
+                    throw new Exception("Missing or unreadable template file: $template");
+                }
             }
         }
 
